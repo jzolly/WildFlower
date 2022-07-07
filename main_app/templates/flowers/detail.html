@@ -1,0 +1,23 @@
+{% extends 'base.html' %} {% block content %}
+
+<h1>Flower Details</h1>
+
+<div class="card">
+    <div class="card-content">
+        <span class="card-title">{{ flower.name }}</span>
+        <p>Scientific Name: {{ flower.name }}</p>
+        <img class="flower-img" src="{{ flower.img }}" alt="{{ flower.common_name }}" height=150px style="border-radius:5px;"/>
+        <p>Type: {{ flower.type }}</p>
+        <p>Color: {{ flower.color }}</p>
+        <p>Petal Number: {{ flower.petal }}</p>
+        <p>Size: {{ flower.size }} inches</p>
+        <p>Leaf Arrangement: {{ flower.leaf_arrangement }}</p>
+        <p>Habitat: {{ flower.habitat }}</p>   
+    </div>
+    <div class="card-action">
+        <a href="{% url 'flowers_update' flower.id %}">Edit</a>
+        <a href="{% url 'flowers_delete' flower.id %}">Delete</a>
+    </div>
+</div>
+
+{% endblock %}
