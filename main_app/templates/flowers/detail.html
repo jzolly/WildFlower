@@ -16,8 +16,8 @@
                 <p>Habitat: {{ flower.habitat }}</p>   
             </div>
             <div class="card-action">
-                <a href="{% url 'flowers_update' flower.id %}">Edit</a>
-                <a href="{% url 'flowers_delete' flower.id %}">Delete</a>
+                <a href="{% url 'flowers_update' flower.id %}"><span class="lime-text text-darken-1">Edit</span></a>
+                <a href="{% url 'flowers_delete' flower.id %}"><span class="lime-text text-darken-1">Delete</span></a>
             </div>
         </div>
     </div>

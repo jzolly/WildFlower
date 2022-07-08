@@ -2,6 +2,19 @@ from django.db import models
 from django.urls import reverse
 
 # Create your models here.
+
+class Use(models.Model):
+    name = models.CharField(max_length=50)
+    use = models.CharField(max_length=200)
+
+    def __str__(self):
+        return f'{self.name}{self.use}'
+
+    def get_absolute_url(self):
+        return reverse('uses_detail',
+        kwargs={'pk': self.id})
+
+
 class Flower(models.Model):
     name = models.CharField(max_length=100)
     common_name = models.CharField(max_length=100)
@@ -12,6 +25,7 @@ class Flower(models.Model):
     leaf_arrangement = models.CharField(max_length=100)
     habitat = models.CharField(max_length=100)
     img = models.CharField(max_length=250)
+    uses = models.ManyToManyField(Use)
 
     def __str__(self):
         return self.name

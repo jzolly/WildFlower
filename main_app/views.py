@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from .models import Flower
+from django.views.generic import ListView
+from django.views.generic.detail import DetailView
+from .models import Flower, Use
 from .forms import SightingForm
 
 def home(request):
@@ -27,7 +29,16 @@ def add_sighting(request, flower_id):
         new_sighting.save()
     return redirect('detail', flower_id=flower_id)
 
-# CUDs
+# Many-Many view methods
+def assoc_use(request, flower_id, use_id):
+    Flower.objects.get(id=flower_id).uses.add(use_id)
+    return redirect('detail', flower_id=flower_id)
+
+def assoc_use_delete(request, flower_id, use_id):
+    Flower.objects.get(id=flower_id).uses.remove(use_id)
+    return redirect('detail', flower_id=flower_id)
+
+# CUDs Class Views
 class FlowerCreate(CreateView):
     model = Flower
     fields = '__all__'

@@ -22,10 +22,10 @@
     <!-- classes: navbar-fixed, left brand-logo, nav-wrapper...etc, are a materialized tag -->
     <header class="navbar-fixed">
       <nav>
-        <div class="nav-wrapper green">
+        <div class="nav-wrapper teal darken-3">
           <ul>
             <li>
-              <a href="/" class="left brand-logo">&nbsp;&nbsp;WildTennessee</a>
+              <a href="/" class="left brand-logo"><img src="{% static 'images/WildTennesseeBanner.png' %}" alt="logo" height=64/></a>
             </li>
           </ul>
           <ul class="right">
@@ -39,7 +39,7 @@
     </header>
     <!-- This is where we inject our information. It is a placeholder for objects -->
     <main class="container">{% block content %} {% endblock %}</main>
-    <footer class="page-footer green">
+    <footer class="page-footer teal darken-3">
       <div class="right">
         All Rights Reserved, &copy; 2022 Wildflower Tennessee &nbsp;
       </div>
