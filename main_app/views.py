@@ -4,6 +4,8 @@ from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Flower, Use
 from .forms import SightingForm
 
@@ -13,10 +15,12 @@ def home(request):
 def about(request):
     return render(request, 'about.html')
 
+@login_required
 def flowers_index(request):
-    flowers = Flower.objects.all()
+    flowers = Flower.objects.filter(user=request.user)
     return render(request, 'flowers/index.html', {'flowers': flowers})
 
+@login_required
 def flowers_detail(request, flower_id):
     flower = Flower.objects.get(id=flower_id)
     uses_flower_doesnt_have = Use.objects.exclude(id__in = flower.uses.all().values_list('id'))
@@ -24,6 +28,7 @@ def flowers_detail(request, flower_id):
     return render(request, 'flowers/detail.html', 
     {'flower': flower, 'sighting_form': sighting_form, 'uses': uses_flower_doesnt_have })
 
+@login_required
 def add_sighting(request, flower_id):
     form = SightingForm(request.POST)
     if form.is_valid():
@@ -33,10 +38,12 @@ def add_sighting(request, flower_id):
     return redirect('detail', flower_id=flower_id)
 
 # Many-Many view methods
+@login_required
 def assoc_use(request, flower_id, use_id):
     Flower.objects.get(id=flower_id).uses.add(use_id)
     return redirect('detail', flower_id=flower_id)
 
+@login_required
 def assoc_use_delete(request, flower_id, use_id):
     Flower.objects.get(id=flower_id).uses.remove(use_id)
     return redirect('detail', flower_id=flower_id)
@@ -57,7 +64,7 @@ def signup(request):
     return render(request, 'registration/signup.html', context)
 
 # CUDs Class Views
-class FlowerCreate(CreateView):
+class FlowerCreate(LoginRequiredMixin, CreateView):
     model = Flower
     fields = ['name', 'common_name', 'type', 'color', 'petals', 'size', 'leaf_arrangement', 'habitat', 'img']
     success_url = '/flowers/'
@@ -66,28 +73,28 @@ class FlowerCreate(CreateView):
         form.instsance.user = self.request.user
         return super().form_valid(form)
     
-class FlowerUpdate(UpdateView):
+class FlowerUpdate(LoginRequiredMixin, UpdateView):
     model = Flower
     fields = ['name', 'common_name', 'type', 'color', 'petals', 'size', 'leaf_arrangement', 'habitat', 'img']
 
-class FlowerDelete(DeleteView):
+class FlowerDelete(LoginRequiredMixin, DeleteView):
     model = Flower
     success_url = '/flowers/'
 
 # Use Class Views
 
-class UseList(ListView):
+class UseList(LoginRequiredMixin, ListView):
     model = Use
     template_name = 'uses/index.html'
-class UseDetail(DetailView):
+class UseDetail(LoginRequiredMixin, DetailView):
     model = Use
     template_name = 'uses/detail.html'
-class UseCreate(CreateView):
+class UseCreate(LoginRequiredMixin, CreateView):
     model = Use
     fields = ['name', 'use']  
-class UseUpdate(UpdateView):
+class UseUpdate(LoginRequiredMixin, UpdateView):
     model = Use
     fields = ['name', 'use']
-class UseDelete(DeleteView):
+class UseDelete(LoginRequiredMixin, DeleteView):
     model = Use
     success_url ='/uses/'
