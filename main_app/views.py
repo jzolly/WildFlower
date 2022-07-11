@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
 from .models import Flower, Use
 from .forms import SightingForm
 
@@ -39,12 +41,31 @@ def assoc_use_delete(request, flower_id, use_id):
     Flower.objects.get(id=flower_id).uses.remove(use_id)
     return redirect('detail', flower_id=flower_id)
 
+def signup(request):
+    error_message = ''
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('index')
+        else:
+            error_message = 'Invalid sign up - try again'
+
+    form = UserCreationForm()
+    context = {'form': form, 'error_message': error_message}
+    return render(request, 'registration/signup.html', context)
+
 # CUDs Class Views
 class FlowerCreate(CreateView):
     model = Flower
     fields = ['name', 'common_name', 'type', 'color', 'petals', 'size', 'leaf_arrangement', 'habitat', 'img']
     success_url = '/flowers/'
 
+    def form_valid(self, form):
+        form.instsance.user = self.request.user
+        return super().form_valid(form)
+    
 class FlowerUpdate(UpdateView):
     model = Flower
     fields = ['name', 'common_name', 'type', 'color', 'petals', 'size', 'leaf_arrangement', 'habitat', 'img']
